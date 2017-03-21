@@ -34,6 +34,7 @@ int Core::getTotalTurnAround()
 	return totalTurnaround;
 }
 
+
 // setters
 void Core::setPrevQ(queue<Process>* prevQ)
 {

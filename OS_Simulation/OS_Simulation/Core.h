@@ -14,6 +14,7 @@ private:
 	int totalResponse;
 	int totalTurnaround;
 
+
 public:
 
 	// getters
