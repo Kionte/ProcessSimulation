@@ -3,6 +3,8 @@
 
 
 #include<queue>
+#include<thread>
+#include<map>
 #include"Process.h"
 using namespace std;
 class Core
@@ -17,10 +19,12 @@ private:
 	int totalWait;
 	int totalResponse;
 	int totalTurnaround;
+	thread t;
 
 
 public:
 	Core();
+
 
 	// getters
 	queue<Process>* getPrevQ();
@@ -43,6 +47,9 @@ public:
 	void setTotalTurnAround(int totalTurnAround);
 
 	void algorithm();
+	void run(void(*func));
+	void run(void(*func)(map<int, Process>), map<int, Process> processes);
+
 };
 
 #endif // !CORE_H

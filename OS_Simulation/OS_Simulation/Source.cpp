@@ -16,16 +16,14 @@ void putInSystem(map<int, Process> processes);
 /// this will excecute all of the processes 
 void run(int i);
 /// initialize the cores and threads and then start the cores
-void start();
+void start(map<int,Process> processes);
 /// create five random text files 
 void createTextFiles();
-/// delete text files?
-/// not sure if we need this but maybe run this at the end of the program?
-/// or right after reading all of the text files in? 
-/// or just put this code in the createTextFile() function
-void deleteTextFiles();
 
-queue<queue<Process>> simSystem;
+
+queue<Process> simSystem;
+
+
 
 
 int main()
@@ -33,8 +31,9 @@ int main()
 	// create textFiles
 	createTextFiles();
 	//  read in form text file & place in map 
-	map<int, Process> processes = readInFromTextFile(1);
-	start();
+	
+	map<int,Process> processes = readInFromTextFile(1);
+	start(processes);
 
 	return 0;
 }
@@ -47,36 +46,22 @@ map<int, Process> readInFromTextFile(int fileID)
 	map<int, Process> p;
 	return p;
 }
-void start() 
+void start(map<int,Process> processes) 
 {
 	// create cores 
 	Core coreArray[SIZE];
-	// create threads
-	// one thread will run "putInSystem". the other threads will run "core.algorithm()"
-	thread threadArray[SIZE];
 
-	threadArray[0] = thread(0, putInSystem);
-	for (int i = 1; i < SIZE; i++)
-	{
-		threadArray[i] = thread(run, i);
-	}
-	// start threads
-	for (auto &t : threadArray)
-	{
-		t.join();
-	}
+	coreArray[0].run(putInSystem,processes);
+	
 }
 void putInSystem(map<int, Process> processes)
 {
-	// while system size is less then n add process from processes to system
+
 }
 void run(int i) 
 {
 
 }
-void deleteTextFiles() 
-{
 
-}
 
 

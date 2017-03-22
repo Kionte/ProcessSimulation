@@ -76,5 +76,18 @@ void Core::setTotalTurnAround(int totalTurnAround)
 	this->totalTurnaround = totalTurnAround;
 }
 
+
 // special
 void Core::algorithm() {}
+
+void Core::run(void (*func)) 
+{
+
+	this->t = thread(func);
+	this->t.join();
+}
+void Core::run(void(*func)(map<int, Process>), map<int,Process> processes)
+{
+	this->t = thread(func, processes);
+	this->t.join();
+}
