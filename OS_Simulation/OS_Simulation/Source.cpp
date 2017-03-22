@@ -5,6 +5,7 @@
 #include "Process.h"
 using namespace std;
 
+/// will be used towards number of threads and processess
 int const SIZE = 5;
 /// fileID will determine which text file (set of processes) to read in from the text file
 map<int, Process>readInFromTextFile(int fileID);
@@ -23,6 +24,7 @@ void createTextFiles();
 /// or right after reading all of the text files in? 
 /// or just put this code in the createTextFile() function
 void deleteTextFiles();
+
 queue<queue<Process>> simSystem;
 
 
