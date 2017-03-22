@@ -26,7 +26,6 @@ public:
 	Core();
 
 
-
 	// getters
 	queue<Process>* getPrevQ();
 	queue<Process>* getNextQ();
