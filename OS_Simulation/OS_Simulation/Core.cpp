@@ -77,6 +77,7 @@ void Core::setTotalTurnAround(int totalTurnAround)
 }
 
 
+
 // special
 void Core::algorithm() {}
 

@@ -14,7 +14,7 @@ map<int, Process>readInFromTextFile(int fileID);
 /// once the map object is empty the thread will be...	(terminated?, used for different purpose?, do something?, do nothing?)
 void putInSystem(map<int, Process> processes);
 /// this will excecute all of the processes 
-void run(int i);
+void run();
 /// initialize the cores and threads and then start the cores
 void start(map<int,Process> processes);
 /// create five random text files 
@@ -26,13 +26,14 @@ queue<Process> simSystem;
 
 
 
+
 int main()
 {
 	// create textFiles
 	createTextFiles();
 	//  read in form text file & place in map 
-	
 	map<int,Process> processes = readInFromTextFile(1);
+
 	start(processes);
 
 	return 0;
@@ -53,12 +54,17 @@ void start(map<int,Process> processes)
 
 	coreArray[0].run(putInSystem,processes);
 	
+	for(int i = 1; i < SIZE; i++)
+	{
+		coreArray[i].run(run);
+	}
+
 }
 void putInSystem(map<int, Process> processes)
 {
 
 }
-void run(int i) 
+void run() 
 {
 
 }
