@@ -11,27 +11,39 @@ map<int, Process>readInFromTextFile(int fileID);
 /// has less then a certian amount of processes it will pull from the map object (processes) and place that process into the simSystem
 /// once the map object is empty the thread will be...	(terminated?, used for different purpose?, do something?, do nothing?)
 void putInSystem(map<int, Process> processes);
-
+void run();
 
 queue<queue<Process>> simSystem;
-
+int const SIZE = 5;
 int main()
 {
 	//  read in form text file & place in map 
 	map<int, Process> processes = readInFromTextFile(1);
 	// create cores 
-		// im cant remeber if we are doing one core per algorithm (3) or if we were doing something else?
+	Core coreArray[SIZE];
 
 	// create threads
 		// one thread will run "putInSystem". the other threads will run "core.algorithm()"
-
+	thread threadArray[SIZE];
+	threadArray[0] = thread(0, putInSystem);
+	for (int i = 1; i < SIZE; i++)
+	{
+		threadArray[i] = thread(i,run);
+	}
 	// start threads
+	for (auto &t : threadArray)
+	{
+		t.join();
+	}
 
 
 
 	return 0;
 }
+void run() 
+{
 
+}
 void putInSystem(map<int, Process> processes)
 {
 	// while system size is less then n add process from processes to system
