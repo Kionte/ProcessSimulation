@@ -1,3 +1,7 @@
+#ifndef CORE_H
+#define CORE_H
+
+
 #include<queue>
 #include"Process.h"
 using namespace std;
@@ -16,6 +20,7 @@ private:
 
 
 public:
+	Core();
 
 	// getters
 	queue<Process>* getPrevQ();
@@ -39,3 +44,5 @@ public:
 
 	void algorithm();
 };
+
+#endif // !CORE_H

@@ -1,5 +1,12 @@
 #include "Core.h"
 
+
+// Ctor
+Core::Core() 
+{
+
+}
+
 // getters
 queue<Process>* Core::getPrevQ()
 {
