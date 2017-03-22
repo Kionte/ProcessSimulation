@@ -19,7 +19,6 @@ private:
 	int totalTurnaround;
 
 
-
 public:
 	Core();
 

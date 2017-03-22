@@ -5,7 +5,6 @@
 Core::Core() 
 {
 
-
 }
 
 // getters
