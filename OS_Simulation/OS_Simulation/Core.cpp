@@ -2,21 +2,10 @@
 
 
 // Ctor
-Core::Core() 
-{
-
-
-}
+Core::Core() {}
 
 // getters
-queue<Process>* Core::getPrevQ()
-{
-	return PrevQ;
-}
-queue<Process>* Core::getNextQ()
-{
-	return NextQ;
-}
+
 int Core::getQuantum()
 {
 	return quantum;
@@ -43,15 +32,9 @@ int Core::getTotalTurnAround()
 }
 
 
+
 // setters
-void Core::setPrevQ(queue<Process>* prevQ)
-{
-	this->PrevQ = PrevQ;
-}
-void Core::setNextQ(queue<Process>* nextQ)
-{
-	this->NextQ = NextQ;
-}
+
 void Core::setQuantum(int quantum)
 {
 	this->quantum = quantum;
@@ -79,16 +62,3 @@ void Core::setTotalTurnAround(int totalTurnAround)
 
 
 // special
-void Core::algorithm() {}
-
-void Core::run(void (*func)) 
-{
-
-	this->t = thread(func);
-	this->t.join();
-}
-void Core::run(void(*func)(map<int, Process>), map<int,Process> processes)
-{
-	this->t = thread(func, processes);
-	this->t.join();
-}
