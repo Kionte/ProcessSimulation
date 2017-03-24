@@ -1,32 +1,30 @@
-#ifndef PROCESS_H
-#define PROCESS_H
+#ifndef PROCESS_H_
+#define PROCESS_H_
 
 
-struct Process
-{
-	int id;
+struct Process {
+	Process(int PID, int priority, int arrival_t, int cpuBurst, int ioBurst,
+		int turnAround, int wait, int response, int contextSwitch) :
+		PID(PID), priority(priority), arrival_t(arrival_t), cpuBurst(cpuBurst),
+		ioBurst(ioBurst), turnAround(turnAround), wait(wait), response(response), contextSwitch(contextSwitch) {}
+	int PID;
 	int priority;
+	int arrival_t;
 	int ioBurst;
 	int cpuBurst;
 	int turnAround;
 	int wait;
 	int response;
-	int contextSwitchTime;
+	int contextSwitch;
 
 
-	Process() {}
-	Process(int id, int priority, int ioBurst, int cpuBurst, int turnAround, int wait, int response, int contextSwitchTime) 
-	{
-		this->id = id;
-		this->priority = priority;
-		this->ioBurst = ioBurst;
-		this->cpuBurst = cpuBurst;
-		this->turnAround = turnAround;
-		this->wait = wait;
-		this->response = response;
-		this->contextSwitchTime = contextSwitchTime;
-	}
-
+	//bool operator>(const Process &other) const {
+	//	if (arrival_t < other.arrival_t)
+	//		return true;
+	//	else if (priority < other.priority)
+	//		return true;
+	//	else if ((cpuBurst + ioBurst) > (other.cpuBurst + other.ioBurst))
+	//		return false;
+	//}
 };
-
-#endif // !PROCESS_H
+#endif // !PROCESS_H_

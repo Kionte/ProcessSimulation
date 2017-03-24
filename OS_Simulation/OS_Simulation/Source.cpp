@@ -57,6 +57,7 @@ void start(map<int,Process> processes)
 		coreArray[i].run(run);
 	}
 
+
 }
 void putInSystem(map<int, Process> processes)
 {
