@@ -13,14 +13,17 @@ class Core
 private:
 
 	Process runningP;
+	queue<Process>* ready;
 	int quantum;
 	int throughput;
 	int totalWait;
 	int totalResponse;
 	int totalTurnaround;
+	int wasted; 
+	bool busy; 
 
 public:
-	Core();
+	Core(queue<Process>* rq, int q);
 	// getters
 	int getQuantum();
 	Process getRunningP();
@@ -28,7 +31,8 @@ public:
 	int getTotalWait();
 	int getTotalResponse();
 	int getTotalTurnAround();
-
+	int getWasted(); 
+	bool getBusy(); 
 	// setters
 	void setQuantum(int quantum);
 	void setRunningP(Process runningP);
@@ -37,6 +41,11 @@ public:
 	void setTotalResponse(int totalResponse);
 	void setTotalTurnAround(int totalTurnAround);
 
+
+	// algs
+	void FCFS(int clock, int* totalProcessTime);
+	void RR(int clock, int* totalProcessTime);
+	void MLFB(queue<Process>* ready);
 };
 
 #endif // !CORE_H

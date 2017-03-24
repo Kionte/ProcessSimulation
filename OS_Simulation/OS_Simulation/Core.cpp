@@ -2,7 +2,18 @@
 
 
 // Ctor
-Core::Core() {}
+Core::Core(queue<Process>* rq, int q)
+{
+	busy = false; 
+	ready = rq; 
+	quantum = 0;
+	throughput = 0;
+	totalWait = 0;
+	totalResponse = 0;
+	totalTurnaround = 0;
+	quantum = q; 
+	wasted = 0; 
+}
 
 // getters
 
@@ -29,6 +40,16 @@ int Core::getTotalResponse()
 int Core::getTotalTurnAround()
 {
 	return totalTurnaround;
+}
+
+bool  Core::getBusy()
+{
+	return busy; 
+}
+
+int Core::getWasted()
+{
+	return wasted; 
 }
 
 
@@ -61,4 +82,93 @@ void Core::setTotalTurnAround(int totalTurnAround)
 }
 
 
-// special
+// algs
+void Core::FCFS(int clock, int* totalProcessTime)
+{
+	if (busy == false)
+	{
+		if (!ready->empty())
+		{
+			runningP = ready->front();
+			ready->pop();
+			runningP.startTime = clock;
+			runningP.response = runningP.startTime - runningP.arrival_t;
+			runningP.wait = runningP.startTime - runningP.arrival_t; 
+			busy = true;
+		}
+	}
+
+		if (runningP.startTime + runningP.tProcessTime <= clock && runningP.complete == false)
+		{
+			runningP.exit = clock;
+			runningP.turnAround = runningP.exit - runningP.arrival_t;
+			
+
+			throughput++;
+			totalWait += runningP.wait;
+			totalResponse += runningP.response;
+			totalTurnaround += runningP.turnAround;
+			runningP.complete = true; 
+			busy = false;
+		}
+		if (runningP.complete == true)
+		{
+			wasted++;
+		}
+}
+void Core::RR(int clock, int * totalProcessTime) 
+{
+	if (busy == false)
+	{
+		if (!ready->empty())
+		{
+			runningP = ready->front(); 
+			ready->pop();
+			runningP.startTime = clock; 
+			if (runningP.firstTime == true)
+			{
+				runningP.response = runningP.startTime - runningP.arrival_t; 
+				runningP.qProcessTime = runningP.tProcessTime; 
+				runningP.firstTime = false;
+				*totalProcessTime += runningP.tProcessTime;
+			}
+			busy = true; 
+
+		}
+	}
+
+	if (*totalProcessTime == 0)
+	{
+		runningP.complete = true;
+		busy = false;
+	}
+	if (runningP.startTime + runningP.qProcessTime <= clock && runningP.complete == false)
+	{
+		runningP.exit = clock;
+		runningP.turnAround = runningP.exit - runningP.arrival_t;
+		runningP.wait = runningP.exit - runningP.arrival_t - runningP.tProcessTime;
+
+		throughput++;
+		totalWait += runningP.wait;
+		totalResponse += runningP.response;
+		totalTurnaround += runningP.turnAround;
+		runningP.complete = true;
+		busy = false;
+		*totalProcessTime -= runningP.tProcessTime;
+	}
+	else if(clock - runningP.startTime >= quantum && runningP.complete == false)
+	{
+		runningP.qProcessTime -= quantum;
+		busy = false;
+		ready->push(runningP);
+	}
+	if (runningP.complete == true)
+	{
+		wasted++; 
+	}
+
+}
+void Core::MLFB(queue<Process>* ready) 
+{
+
+}
