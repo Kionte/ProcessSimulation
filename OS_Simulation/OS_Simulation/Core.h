@@ -15,28 +15,29 @@ private:
 	Process runningP;
 	queue<Process>* ready;
 	int quantum;
-	int throughput;
 	int totalWait;
 	int totalResponse;
 	int totalTurnaround;
+	int totalContextSwitch; 
 	int wasted; 
 	bool busy; 
+	int throughput; 
 
 public:
 	Core(queue<Process>* rq, int q);
 	// getters
 	int getQuantum();
 	Process getRunningP();
-	int getThroughput();
 	int getTotalWait();
 	int getTotalResponse();
 	int getTotalTurnAround();
 	int getWasted(); 
 	bool getBusy(); 
+	int getConSwitch(); 
+	int getThroughput(); 
 	// setters
 	void setQuantum(int quantum);
 	void setRunningP(Process runningP);
-	void setThroughput(int throughput);
 	void settotalWait(int totalWait);
 	void setTotalResponse(int totalResponse);
 	void setTotalTurnAround(int totalTurnAround);

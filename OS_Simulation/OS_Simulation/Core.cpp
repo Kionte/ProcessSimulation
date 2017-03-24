@@ -6,17 +6,20 @@ Core::Core(queue<Process>* rq, int q)
 {
 	busy = false; 
 	ready = rq; 
-	quantum = 0;
-	throughput = 0;
 	totalWait = 0;
 	totalResponse = 0;
 	totalTurnaround = 0;
 	quantum = q; 
+	totalContextSwitch = 0; 
+	throughput = 0; 
 	wasted = 0; 
 }
 
 // getters
-
+int Core::getTotalTurnAround()
+{
+	return totalTurnaround; 
+}
 int Core::getQuantum()
 {
 	return quantum;
@@ -25,10 +28,7 @@ Process Core::getRunningP()
 {
 	return runningP;
 }
-int Core::getThroughput()
-{
-	return throughput;
-}
+
 int Core::getTotalWait()
 {
 	return totalWait;
@@ -37,10 +37,7 @@ int Core::getTotalResponse()
 {
 	return totalResponse;
 }
-int Core::getTotalTurnAround()
-{
-	return totalTurnaround;
-}
+
 
 bool  Core::getBusy()
 {
@@ -52,7 +49,15 @@ int Core::getWasted()
 	return wasted; 
 }
 
+int Core::getConSwitch()
+{
+	return totalContextSwitch; 
+}
 
+int Core::getThroughput()
+{
+	return throughput; 
+}
 
 // setters
 
@@ -64,10 +69,7 @@ void Core::setRunningP(Process runningP)
 {
 	this->runningP;
 }
-void Core::setThroughput(int throughput)
-{
-	this->throughput = throughput;
-}
+
 void Core::settotalWait(int totalWait)
 {
 	this->totalWait = totalWait;
@@ -97,6 +99,7 @@ void Core::FCFS(int clock, int* totalProcessTime)
 			busy = true;
 		}
 	}
+		
 
 		if (runningP.startTime + runningP.tProcessTime <= clock && runningP.complete == false)
 		{
@@ -105,16 +108,15 @@ void Core::FCFS(int clock, int* totalProcessTime)
 			
 
 			throughput++;
+			totalContextSwitch += runningP.contextSwitch; 
 			totalWait += runningP.wait;
 			totalResponse += runningP.response;
 			totalTurnaround += runningP.turnAround;
 			runningP.complete = true; 
 			busy = false;
 		}
-		if (runningP.complete == true)
-		{
-			wasted++;
-		}
+
+	
 }
 void Core::RR(int clock, int * totalProcessTime) 
 {
@@ -136,11 +138,9 @@ void Core::RR(int clock, int * totalProcessTime)
 
 		}
 	}
-
-	if (*totalProcessTime == 0)
+	if (runningP.complete == true)
 	{
-		runningP.complete = true;
-		busy = false;
+		wasted++; 
 	}
 	if (runningP.startTime + runningP.qProcessTime <= clock && runningP.complete == false)
 	{
@@ -160,11 +160,8 @@ void Core::RR(int clock, int * totalProcessTime)
 	{
 		runningP.qProcessTime -= quantum;
 		busy = false;
+		
 		ready->push(runningP);
-	}
-	if (runningP.complete == true)
-	{
-		wasted++; 
 	}
 
 }

@@ -4,8 +4,8 @@
 
 struct Process {
 	Process() {}
-	Process(int PID, int priority, int cpuBurst, int ioBurst,
-		int contextSwitch) {
+	Process(int PID, int priority, int arrival_t, int cpuBurst, int ioBurst,
+		int turnAround, int wait, int response, int contextSwitch, int startTime) {
 		this->PID = PID; 
 		this->priority = priority; 
 		this->cpuBurst = cpuBurst; 
@@ -14,6 +14,7 @@ struct Process {
 		this->complete = false;
 		this->tProcessTime = this->cpuBurst + this->ioBurst + this->contextSwitch; 
 		this->firstTime = true; 
+		this->taken = false; 
 	}
 	int PID;			//set at creation
 	int priority;		//set at creation
@@ -30,6 +31,7 @@ struct Process {
 	bool complete;		//set on creation (false)
 	bool firstTime; 
 	int qProcessTime; 
+	bool taken; 
 
 };
 #endif // !PROCESS_H_
