@@ -1,16 +1,13 @@
 #include <iostream>
 #include <map>
-#include <thread>
+
+
 #include "Core.h"
 #include "Process.h"
 #include "GlobalQueue.h"
 using namespace std;
 
-/// will be used towards number of threads and processess
-int const SIZE = 5;
-
-
-// randomly created
+// randomly created representation of user
 queue<Process> user;
 
 // queue that the processes will be pulling from
@@ -18,105 +15,136 @@ queue<Process> ready;
 
 void createUser() {
 	srand((unsigned int)time(NULL));
-	//std::fstream process_file("processes");
 	for (int i = 0; i < 100; i++) // generates 100 random processes
 	{
-		int PID = i, priority = rand() % (5) + 1, arrival_t = 0,
-			cpuBurst = rand() % (10) + 1, ioBurst = rand() % (11) + 5, ifIO = rand() % 2, contextSwitch = rand() % 3;
+		int PID = i, priority = rand() % (5) + 1, arrivalTime = 0, cpuBurst = rand() % (10) + 1, 
+			ioBurst = rand() % (11) + 5, ifIO = rand() % 2, contextSwitch = rand() % 3 + 1,
+			tProcessTime = cpuBurst + ioBurst + contextSwitch;
 		if (ifIO == 0) ioBurst = 1; // randomly decide if process is io-bound/heavy or not
 		Process *process = NULL;
-		process = new Process(PID, priority, arrival_t, cpuBurst, ioBurst, 0, 0, 0, contextSwitch, 0);
+		process = new Process(PID, priority, arrivalTime, cpuBurst, ioBurst, 0, 0, 0, contextSwitch, 0, tProcessTime);
 		user.push(*process);
 	}
+
 }
+
 
 void computeAvg(vector<Core> cores, int clock, int wasted);
 
 bool check(vector<Core> cores);
 
-int main()
-{
-	
+int main(){
+	vector<Core> cores;
+	int wasted = 0; // total time wasted waiting
+	int clock = 0; // global clock variable
+	int totalProcessTime = 0;
+	int quantum = 0;
+	bool quantum_set = false;
+
+
 	createUser();
 	cout << "Please enter the desired number of cores for the simulation (*4 or 8).\n\n";
-	int num;
-	cin >> num;
-	while (num != 4 && num != 8 && cin.fail())
-	{
+	int num_cores;
+	cin >> num_cores;
+	while ((num_cores != 4 && num_cores != 8) || cin.fail()){
 		cout << "Invalid input\n";
 		cin.clear();
 		cout << "Please enter your desired number of cores for the simulation (*4 or 8).\n\n";
 		cin.ignore(std::numeric_limits<int>::max(), '\n');
-		cin >> num;
+		cin >> num_cores;
 	}
-	cout << "\nPlease enter the desired quantum for the simulation (max 20).\n\n";
-	int q;
-	cin >> q;
-	while ((q > 20 || q < 1 || cin.fail()))
-	{
-		cout << "Invalid input\n";
-		cin.clear();
-		cout << "Please enter the desired quantum for the simulation (max 20).\n\n";
-		cin.ignore(std::numeric_limits<int>::max(), '\n');
-		cin >> q;
-	}
-	cout << "\nPlease enter the desired run time for the simulation (Range: 100-1000000).\n\n";
+	cout << "\nPlease enter the desired run time for the simulation (*Range: 100-1000000).\n\n";
 	int run;
 	cin >> run;
-	while ((run < 100 || run > 1000000 || cin.fail()))
-	{
+	while (!(run >= 100 && run <= 1000000) || cin.fail()){
 		cout << "Invalid input\n";
 		cin.clear();
-		cout << "Please enter the desired quantum for the simulation (Range: 100-1000000).\n\n";
+		cout << "Please enter the desired run time for the simulation (*Range: 100-1000000).\n\n";
 		cin.ignore(std::numeric_limits<int>::max(), '\n');
 		cin >> run;
 	}
 
-	vector<Core> cores;
+	cout << "\nPlease enter the desired algorithm for the simulation.\n\n";
+	int alg;
+	cout << "First Come First Serve = 1\n";
+	cout << "Round Robin = 2\n";
+	cout << "Shortest Process Next = 3\n";
+	cin >> alg;
 
-	for (int i = 0; i < num; i++)
+	while (!(alg >= 1 && alg <= 4) || cin.fail())
+	{
+		cout << "Invalid input\n";
+		cin.clear();
+		cout << "Please enter the desired algorithm for the simulation.\n\n";
+		cin.ignore(std::numeric_limits<int>::max(), '\n');
+		cin >> alg;
+	}
+	for (int i = 0; i < num_cores; i++) // creats "num_cores" cores to work with
 	{
 		Core* temp = NULL;
-		temp = new Core(&ready, q);
+		temp = new Core(&ready, quantum);
 		cores.push_back(*temp);
 	}
-	int wasted = 0; 
-	int clock = 0; 
-	int totalProcessTime = 0;
-	// use this to change the alg
-	int alg = 0;
-	do
+
+
+	while (clock < run)
 	{
-			// for each time interval ...
-			if ((!user.empty() && (ready.size() < 5))) {
-				int entry = rand() % 2;
+
+		for (int i = 0; i < 15; i++)
+		{
+			if ((!user.empty() && (ready.size() < 20))) {
+				int entry = 1;
 				if (entry == 1) {
 					Process process = user.front();
-					process.arrival_t = clock;
+					process.arrivalTime = clock;
 					ready.push(process);
 					user.pop();
 				}
 			}
-			for (auto &c : cores)
-			{
+		}
+		switch (alg) {
+		case 1:
+			for (auto &c : cores) {
 				c.FCFS(clock, &totalProcessTime);
-			}
-			for (auto &c : cores)
-			{
-				if (c.getRunningP().complete && ready.empty())
-				{
-					wasted++;
-					break;
+			} break;
+		case 2:
+			if (quantum_set == false) {
+				cout << "\nPlease enter the desired quantum for the simulation (max 20).\n\n";
+				cin >> quantum;
+				while (!(quantum >= 1 && quantum <= 20) || cin.fail()) {
+					cout << "Invalid input\n";
+					cin.clear();
+					cout << "Please enter the desired quantum for the simulation (max 20).\n\n";
+					cin.ignore(std::numeric_limits<int>::max(), '\n');
+					cin >> quantum;
 				}
+				quantum_set = true;
+				for (auto &c : cores) {
+					c.setQuantum(quantum);
+				}
+
 			}
-				clock++;
-				
-	} while (check(cores) || !user.empty() || !ready.empty() && clock < run);
+
+			for (auto &c : cores) {
+				c.RR(clock, &totalProcessTime);
+			} break;
+
+			//case 3:
+			//	for (auto &c : cores) {
+			//		c.SPN(clock, &totalProcessTime);
+			//	} break;
+			//case 4:
+			//	for (auto &c : cores) {
+			//		c.MLFB(clock, &totalProcessTime);
+			//	} break;
 
 
-	//double utilization = ((double)clock - (double)c1.getWasted()) / (double)clock;
-	//int totalThroughput = c1.getThroughput() + c2.getThroughput() + c3.getThroughput(); 
+		}
+		clock++;
+		
+	}
 	
+	system("CLS"); // clears screen
 	computeAvg(cores, clock, wasted);
 
 	return 0;
@@ -160,14 +188,11 @@ void computeAvg(vector<Core> cores, int clock, int wasted)
 
 }
 
-bool check(vector<Core> cores) 
-{
-	for (auto &c : cores)
-	{
-		if (c.getBusy())
-		{
-			return true;
-		}	
-	}
-	return false;
-}
+//bool check(vector<Core> cores) {
+//	for (auto &c : cores){
+//		if (c.getBusy()){
+//			return true;}
+//		else { return false; }
+//	}
+//
+//}
