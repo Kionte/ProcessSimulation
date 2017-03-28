@@ -1,5 +1,5 @@
-#ifndef CORE_H
-#define CORE_H
+#ifndef CORE_H_
+#define CORE_H_
 
 
 #include<queue>
@@ -10,7 +10,9 @@
 using namespace std;
 class Core
 {
-private:
+protected:
+
+
 
 	Process runningP;
 	queue<Process>* ready;
@@ -21,7 +23,8 @@ private:
 	int totalContextSwitch; 
 	int wasted; 
 	bool busy; 
-	int throughput; 
+	int throughput;
+	int readyWhen;
 
 public:
 	Core(queue<Process>* rq, int q);
@@ -35,12 +38,14 @@ public:
 	bool getBusy(); 
 	int getConSwitch(); 
 	int getThroughput(); 
+	int getReadyWhen();
 	// setters
 	void setQuantum(int quantum);
-	void setRunningP(Process runningP);
-	void settotalWait(int totalWait);
+	void setRunningP(Process *runningP);
+	void settotalWait(int *totalWait);
 	void setTotalResponse(int totalResponse);
 	void setTotalTurnAround(int totalTurnAround);
+	void setTotalThroughput(int *throughput);
 
 
 	// algs
