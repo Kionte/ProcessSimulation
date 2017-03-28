@@ -2,23 +2,24 @@
 #define PROCESS_H_
 
 
+
 struct Process {
 	Process() {}
-	Process(int PID, int priority, int arrival_t, int cpuBurst, int ioBurst,
-		int turnAround, int wait, int response, int contextSwitch, int startTime) {
-		this->PID = PID; 
-		this->priority = priority; 
-		this->cpuBurst = cpuBurst; 
-		this->ioBurst = ioBurst; 
-		this->contextSwitch = contextSwitch; 
+	Process(int PID, int priority, int arrivalTime, int cpuBurst, int ioBurst,
+		int turnAround, int wait, int response, int contextSwitch, int startTime, int tProcessTime) :
+	PID(PID), priority(priority), arrivalTime(arrivalTime), cpuBurst(cpuBurst), ioBurst(ioBurst),
+		turnAround(turnAround), wait(wait), response(response), contextSwitch(contextSwitch), 
+		startTime(startTime), tProcessTime(tProcessTime) {
 		this->complete = false;
-		this->tProcessTime = this->cpuBurst + this->ioBurst + this->contextSwitch; 
 		this->firstTime = true; 
 		this->taken = false; 
 	}
+
+
+
 	int PID;			//set at creation
 	int priority;		//set at creation
-	int arrival_t;		//set when entered into system (populateQueue)
+	int arrivalTime;		//set when entered into system (populateQueue)
 	int ioBurst;		//set at creation
 	int cpuBurst;		//set at creation
 	int turnAround;		//set on exit (exit time - arriaval time)
@@ -29,8 +30,10 @@ struct Process {
 	int tProcessTime;	//set on creation cpuBurst + ioBurst + contextSwitch
 	int exit;			//set on exit (clock)
 	bool complete;		//set on creation (false)
-	bool firstTime; 
-	int qProcessTime; 
+	bool firstTime;     //used to identify if process has ran through a core before
+	int doneWhen;
+	int timeLeft;
+	int newStart;
 	bool taken; 
 
 };

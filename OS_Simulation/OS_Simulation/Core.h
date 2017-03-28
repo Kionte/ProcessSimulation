@@ -14,6 +14,7 @@ protected:
 
 
 
+
 	Process runningP;
 	queue<Process>* ready;
 	int quantum;
